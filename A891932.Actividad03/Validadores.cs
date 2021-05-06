@@ -19,14 +19,14 @@ namespace A891932.Actividad03
                 
                 if (!double.TryParse(Console.ReadLine(), out numero))
                 {
-                    Console.WriteLine("Debe ingresar un número.");
+                    Console.WriteLine("Debe ingresar un número.\n");
                     Console.ReadKey();
                 }
                 else
                 {
                     if(numero < 0)
                     {
-                        Console.WriteLine("El número ingresado debe ser positivo.");
+                        Console.WriteLine("El número ingresado debe ser positivo.\n");
                         Console.ReadKey();
                         break;
                     }
@@ -61,10 +61,10 @@ namespace A891932.Actividad03
                     ok = true;
                 } else
                 {
-                    Console.WriteLine("La opcion '{ingreso}' no es valida");
+                    Console.WriteLine($"La opcion '{ingreso}' no es valida\n");
                     Console.ReadKey();
                 }
-            } while (ingreso != "A" || ingreso != "P");
+            } while (ok == false);
 
             return ingreso;
         }
@@ -80,18 +80,18 @@ namespace A891932.Actividad03
 
                 if (!int.TryParse(Console.ReadLine(), out numero))
                 {
-                    Console.WriteLine("Debe ingresar un número.");
+                    Console.WriteLine("Debe ingresar un número.\n");
                     Console.ReadKey();
                 }
                 else
                 {
                     if (numero < 0)
                     {
-                        Console.WriteLine("El número ingresado debe ser positivo.");
+                        Console.WriteLine("El número ingresado debe ser positivo.\n");
                         Console.ReadKey();                        
                     } else if(numero > 999)
                     {
-                        Console.WriteLine("El número ingresado no debe tener más de 3 digitos");
+                        Console.WriteLine("El número ingresado no debe tener más de 3 digitos\n");
                         Console.ReadKey();                        
                     }
                     else
@@ -117,12 +117,12 @@ namespace A891932.Actividad03
 
                 if (string.IsNullOrWhiteSpace(ingreso))
                 {
-                    Console.WriteLine("Este campo no puede estar vacio.");
+                    Console.WriteLine("Este campo no puede estar vacio.\n");
                     Console.ReadKey();
                 }
                 else if (ingreso.Length > 41)
                 {
-                    Console.WriteLine("Este campo no puede tener una longitud mayor a 40 caracteres");
+                    Console.WriteLine("Este campo no puede tener una longitud mayor a 40 caracteres\n");
                     Console.ReadKey();
                 }
                 else
