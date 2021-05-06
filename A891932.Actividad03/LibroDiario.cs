@@ -13,10 +13,10 @@ namespace A891932.Actividad03
         static string nombreDiario = "C:\\Diario.txt";
 
         static readonly Dictionary<int, Cuenta> Plan = new Dictionary<int, Cuenta>();
-        static string nombrePlan = $"C:/Users/{Environment.UserName}/documents/Plan de cuentas.txt";
+        static string nombrePlan = $"C:/Users/{Environment.UserName}/documents/Plan de cuentas.txt"; // Una de las pocas ubicaciones mas normales donde no pide autorizacion del administrador
+        static string ubicacionPlanDeCuentas;   // En caso de que la ubicacion predeterminada no se utilice, la nueva se almacenara en esta variable.
 
-        static string ubicacionPlanDeCuentas;
-
+        // Agrega una cuenta a Plan verificando que el codigo para identificarla este disponible.
         public static void AgregarCuenta()
         {
             int codigo = Validadores.Codigo("Ingrese el codigo de la cuenta nueva");
@@ -38,6 +38,7 @@ namespace A891932.Actividad03
 
         }
 
+        // Verifica que la cuenta exista en Plan y la elimina.
         public static void QuitarCuenta()
         {
             int codigo = Validadores.Codigo("Ingrese el codigo de la cuenta a eliminar");            
@@ -55,6 +56,7 @@ namespace A891932.Actividad03
             }
         }
 
+        // Print de consola del diccionario Plan.
         public static void ImprimirPlanDeCuentas()
         {
             Console.WriteLine("\tPlan de Cuentas Actual:\n");
@@ -74,6 +76,10 @@ namespace A891932.Actividad03
             Console.WriteLine("----Presione una tecla para continuar----\n");
             Console.ReadKey();
         }
+
+        // Busca 'Plan de cuentas.txt' en la ubicación predeterminada.
+        // Si no existe, pregunta si se desea importar uno existente o crear uno nuevo.
+        // Solo se utiliza una vez al iniciar el programa.
 
         public static void PlanDeCuentas()
         {
@@ -116,9 +122,10 @@ namespace A891932.Actividad03
                         }
                         else
                         {
+                            // Importa el txt si lo encuentra
                             using (var reader = new StreamReader(ubicacionPlanDeCuentas))
                             {
-                                reader.ReadLine(); // Solución muy sucia para ignorar la primera linea del txt.
+                                reader.ReadLine(); // Solución muy sucia y rapida para ignorar la primera linea del txt (Codigo|Nombre|Tipo)
 
                                 while (!reader.EndOfStream)
                                 {
@@ -131,8 +138,10 @@ namespace A891932.Actividad03
                             
                             ok = true;
                         }
-                    }else if(opcion == "C")     // Crea 'Plan de cuentas.txt' en la ubicacion 'C:\'
+                    }else if(opcion == "C")
                     {
+                        // Crea 'Plan de cuentas.txt' en la ubicacion 'C:\'
+                        // Agrega una linea de referencia.
                         Console.WriteLine($"Se ha creado el archivo 'Plan de cuentas' en la ubicacion '{nombrePlan}'\n");
                         using (StreamWriter writer = File.CreateText(nombrePlan))
                         {
@@ -150,6 +159,7 @@ namespace A891932.Actividad03
             }
         }
 
+        // Guarda los cambios realizados al plan de cuentas en el archivo Plan de cuentas.txt
         private static void GrabarPlan()
         {
             using (var writer = new StreamWriter(ubicacionPlanDeCuentas))
