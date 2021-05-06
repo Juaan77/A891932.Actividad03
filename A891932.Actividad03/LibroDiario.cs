@@ -1,42 +1,108 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace A891932.Actividad03
 {
-    static class LibroDiario
+    class LibroDiario
     {
-        // Pregunta la ubicacion del plan de cuentas e importa las cuentas.
-        // Pregunta si queremos abrir un libro diario existente o crear uno nuevo.
-        internal static void Iniciar()
-        {
+        static readonly Dictionary<int, Cuenta> Diario = new Dictionary<int, Cuenta>();
+        static string nombreDiario = "Diario.txt";
 
+        static readonly Dictionary<int, Cuenta> Plan = new Dictionary<int, Cuenta>();
+        static string nombrePlan = "Plan de Cuentas.txt";
+
+        public static void AgregarCuenta()
+        {
+            int codigo = Validadores.Codigo("Ingrese el codigo de la cuenta nueva");
+            string nombre = Validadores.Texto("Ingrese el nombre de la cuenta nueva");
+            string tipo = Validadores.TipoCuenta("Es (A)ctivo o (P)asivo?");
+            Cuenta nueva = new Cuenta(codigo, nombre, tipo);
+            Plan.Add(nueva.Codigo, nueva);
+            Console.WriteLine($"Se ha agregado la cuenta '{nueva.Nombre}' con el codigo {nueva.Codigo}");
+            Console.ReadKey();
+            GrabarPlan();
         }
 
-        // Crear nuevos asientos (NroAsiento|Fecha|CodigoCuenta|Debe|Haber)
-        internal static void IngresarAsiento()
+        public static void QuitarCuenta()
         {
-            throw new NotImplementedException();
+            int codigo = Validadores.Codigo("Ingrese el codigo de la cuenta a eliminar");
+            var cuentaAQuitar = Plan[codigo];
+            if (!Plan.Remove(codigo))
+            {
+                Console.WriteLine($"No existe una cuenta con el codigo '{codigo}'");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine($"Se ha eliminado la cuenta '{cuentaAQuitar.Nombre}' con el codigo {cuentaAQuitar.Codigo}");
+                Console.ReadKey();
+                GrabarPlan();
+            }
         }
 
-        // Imprime los asientos que posee el libro diario actualmente
-        internal static void VerAsientos()
+        public static void ImprimirPlanDeCuentas()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("\tPlan de Cuentas Actual:\n");
+
+            if (Plan.Count == 0)
+            {
+                Console.WriteLine("No se han ingresado cuentas...\n");
+            }
+            else
+            {
+                foreach (var cuenta in Plan)
+                {
+                    Console.WriteLine($"{cuenta.Key} | {cuenta.Value.Nombre} | {cuenta.Value.Tipo} ");
+                }
+            }
+
+            Console.WriteLine("----Presione una tecla para continuar----");
+            Console.ReadKey();
         }
 
-        // Imprime el plan de cuentas importado en Iniciar()
-        internal static void VerPlanDeCuentas()
+        public static void ImportarPlanDeCuentas()
         {
-            throw new NotImplementedException();
+            if (File.Exists(nombrePlan))
+            {
+                using (var reader = new StreamReader(nombrePlan))     // Importa el txt (si este existe en la ubicacion por defecto)
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var linea = reader.ReadLine();
+                        var cuenta = new Cuenta(linea);
+                        Plan.Add(cuenta.Codigo, cuenta);
+                    }
+                }
+            }
         }
 
-        // Guarda el libro diario actual
-        internal static void Guardar()
+        private static void GrabarPlan()
         {
-            throw new NotImplementedException();
+            using (var writer = new StreamWriter(nombrePlan, append: false))
+            {
+                foreach (var cuentas in Plan.Values)
+                {
+                    var linea = cuentas.Serializar();
+                    writer.WriteLine(linea);
+                }
+            }
         }
+       
+        /* private static void GrabarDiario()
+        {
+            using (var writer = new StreamWriter(nombreDiario, append: false))
+            {
+                foreach (var cuentas in Diario.Values)
+                {
+                    var linea = cuentas.Serializar();
+                    writer.WriteLine(linea);
+                }
+            }
+        }
+       */
     }
 }
