@@ -10,7 +10,7 @@ namespace A891932.Actividad03
     {
         static void Main(string[] args)
         {
-            const string menuPrincipal = "\t-MENU PRINCIPAL-\n" +
+            const string menuPrincipal = "\n\t-MENU PRINCIPAL-\n" +
                 "I - Ingresar nuevo asiento\n" +
                 "V - Ver asientos ingresados\n" +
                 "P - Ver plan de cuentas\n" +
@@ -21,7 +21,8 @@ namespace A891932.Actividad03
                 "V - Volver al menu principal\n";
             string opcionElegida = "";
 
-            Console.WriteLine($"\tBienvenido {Environment.UserName} a su gestor de libro diario!\n");
+            Console.WriteLine($"\tBienvenido {Environment.UserName} a su gestor de libro diario!");
+            LibroDiario.PlanDeCuentas();
 
             do
             {
