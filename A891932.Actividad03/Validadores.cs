@@ -8,6 +8,7 @@ namespace A891932.Actividad03
 {
     class Validadores
     {
+        // Valida que sea un double y que sea positivo.
         public static double NumeroPositivo(string textoAImprimir)
         {
             double numero;
@@ -41,6 +42,7 @@ namespace A891932.Actividad03
             return numero;
         }
 
+        // Valida que se elija solo entre 2 opciones.
         internal static string TipoCuenta(string textoAImprimir)
         {
             string ingreso;
@@ -69,6 +71,7 @@ namespace A891932.Actividad03
             return ingreso;
         }
 
+        // Valida que el codigo sea un int y no tenga mas de 3 cifras.
         public static int Codigo(string textoAImprimir)
         {
             int numero;
@@ -105,6 +108,8 @@ namespace A891932.Actividad03
             return numero;
         }
 
+        // Valida que el texto a ingresar no este vacio
+        // ni tenga un largo mayor a 40 caracteres.
         public static string Texto(string textoAImprimir)
         {
             string ingreso;
@@ -134,5 +139,11 @@ namespace A891932.Actividad03
 
             return ingreso;
         }
+
+       /* public static double PartidaDoble(double debe, double haber)
+        {
+            
+            return 
+        }*/
     }
 }
