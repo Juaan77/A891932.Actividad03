@@ -21,24 +21,33 @@ namespace A891932.Actividad03
             string nombre = Validadores.Texto("Ingrese el nombre de la cuenta nueva");
             string tipo = Validadores.TipoCuenta("Es (A)ctivo o (P)asivo?");
             Cuenta nueva = new Cuenta(codigo, nombre, tipo);
-            Plan.Add(nueva.Codigo, nueva);
-            Console.WriteLine($"Se ha agregado la cuenta '{nueva.Nombre}' con el codigo {nueva.Codigo}");
-            Console.ReadKey();
-            GrabarPlan();
+            if(Plan.ContainsKey(codigo))
+            {
+                Console.WriteLine($"Error: El codigo '{codigo}' ya esta siendo utilizado por otra cuenta\n");
+                Console.ReadKey();
+            }
+            else
+            {
+                Plan.Add(nueva.Codigo, nueva);
+                Console.WriteLine($"Se ha agregado la cuenta '{nueva.Nombre}' con el codigo {nueva.Codigo}\n");
+                Console.ReadKey();
+                GrabarPlan();
+            }
+
         }
 
         public static void QuitarCuenta()
         {
-            int codigo = Validadores.Codigo("Ingrese el codigo de la cuenta a eliminar");
-            var cuentaAQuitar = Plan[codigo];
-            if (!Plan.Remove(codigo))
+            int codigo = Validadores.Codigo("Ingrese el codigo de la cuenta a eliminar");            
+            if (!Plan.TryGetValue(codigo, out var cuentaEliminada))
             {
                 Console.WriteLine($"No existe una cuenta con el codigo '{codigo}'");
                 Console.ReadKey();
             }
             else
             {
-                Console.WriteLine($"Se ha eliminado la cuenta '{cuentaAQuitar.Nombre}' con el codigo {cuentaAQuitar.Codigo}");
+                Plan.Remove(codigo);
+                Console.WriteLine($"Se ha eliminado la cuenta '{cuentaEliminada.Nombre}' con el codigo {cuentaEliminada.Codigo}");
                 Console.ReadKey();
                 GrabarPlan();
             }
