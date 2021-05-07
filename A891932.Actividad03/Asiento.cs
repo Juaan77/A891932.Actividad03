@@ -9,11 +9,11 @@ namespace A891932.Actividad03
     class Asiento
     {
         // NroAsiento|Fecha|CodigoCuenta|Debe|Haber
-        int Numero { get; }
-        DateTime Fecha { get; }
-        int CodigoCuenta { get; }
-        double Debe { get; }
-        double Haber { get; }
+        public int Numero { get; }
+        public DateTime Fecha { get; }
+        public int CodigoCuenta { get; }
+        public double Debe { get; }
+        public double Haber { get; }
 
         public Asiento(int numero, int codigoCuenta, double debe, double haber)
         {
