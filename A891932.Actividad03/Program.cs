@@ -12,17 +12,20 @@ namespace A891932.Actividad03
         {
             const string menuPrincipal = "\n\t-MENU PRINCIPAL-\n" +
                 "I - Ingresar nuevo asiento\n" +
-                "V - Ver asientos ingresados\n" +
+                "V - Ver Libro Diario\n" +
                 "P - Ver plan de cuentas\n" +
                 "M - Modificar plan de cuentas\n" +
                 "S - Guardar y salir\n";
             const string menuModificarPlan = "\t-MODIFICAR PLAN DE CUENTAS-\nA - Agregar nueva cuenta\n" +
                 "E - Eliminar cuenta\n" +
                 "V - Volver al menu principal\n";
-            string opcionElegida = "";
+            string opcionElegida;
 
-            Console.WriteLine($"\tBienvenido {Environment.UserName} a su gestor de libro diario!");
-            LibroDiario.PlanDeCuentas();
+            // -----------------------------------INICIO-----------------------------------  //
+
+            Console.WriteLine($"\tBienvenido {Environment.UserName} a su gestor de libro diario!\n");            
+            LibroDiario.IniciarPlanDeCuentas();
+            LibroDiario.IniciarDiario();
 
             do
             {
@@ -32,10 +35,10 @@ namespace A891932.Actividad03
                 switch (opcionElegida)
                 {
                     case "I":
-                        
+                        // EN CONSTRUCCION
                         break;
                     case "V":
-                        
+                        LibroDiario.ImprimirDiario();
                         break;
                     case "P":
                         LibroDiario.ImprimirPlanDeCuentas();
@@ -46,22 +49,19 @@ namespace A891932.Actividad03
                             Console.WriteLine(menuModificarPlan);
                             opcionElegida = Console.ReadLine().ToUpper();
 
-                            switch (opcionElegida)
+                            if (opcionElegida == "A")
                             {
-                                case "A":
-                                    LibroDiario.AgregarCuenta();
-                                    break;
-                                case "E":
-                                    LibroDiario.QuitarCuenta();
-                                    break;
+                                LibroDiario.AgregarCuenta();
                             }
-                            
-                            if (opcionElegida != "A" && opcionElegida != "E" && opcionElegida != "V")
+                            else if (opcionElegida == "E")
+                            {
+                                LibroDiario.QuitarCuenta();
+                            }
+                            else if (opcionElegida != "A" && opcionElegida != "E" && opcionElegida != "V")
                             {
                                 Console.WriteLine($"'{opcionElegida}' no es una opcion valida\n");
                                 Console.ReadKey();
                             }
-
                         } while (opcionElegida != "V");
                         break;                    
                 }
@@ -74,7 +74,7 @@ namespace A891932.Actividad03
 
             } while (opcionElegida != "S");
 
-            Console.WriteLine("Adios!");
+            Console.WriteLine("Cerrando...");
             Console.ReadKey();
         }
     }
