@@ -21,7 +21,6 @@ namespace A891932.Actividad03
                 "V - Volver al menu principal\n";
             string opcionElegida;
 
-            // -----------------------------------INICIO-----------------------------------  //
 
             Console.WriteLine($"\tBienvenido {Environment.UserName} a su gestor de libro diario!\n");            
             LibroDiario.IniciarPlanDeCuentas();
@@ -35,7 +34,7 @@ namespace A891932.Actividad03
                 switch (opcionElegida)
                 {
                     case "I":
-                        // EN CONSTRUCCION
+                        LibroDiario.AgregarAsiento();
                         break;
                     case "V":
                         LibroDiario.ImprimirDiario();
@@ -74,7 +73,7 @@ namespace A891932.Actividad03
 
             } while (opcionElegida != "S");
 
-            Console.WriteLine("Cerrando...");
+            Console.WriteLine("Saliendo al escritorio...");
             Console.ReadKey();
         }
     }
