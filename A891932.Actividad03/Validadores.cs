@@ -46,6 +46,7 @@ namespace A891932.Actividad03
         internal static string TipoCuenta(string textoAImprimir)
         {
             string ingreso;
+            string retorno = "";
             bool ok = false;
 
             do
@@ -57,18 +58,22 @@ namespace A891932.Actividad03
                 {
                     Console.WriteLine("ACTIVO");
                     ok = true;
-                } else if(ingreso == "P")
+                    retorno = "Activo";
+                } 
+                else if(ingreso == "P")
                 {
                     Console.WriteLine("PASIVO");
                     ok = true;
-                } else
+                    retorno = "Pasivo";
+                }
+                else
                 {
                     Console.WriteLine($"La opcion '{ingreso}' no es valida\n");
                     Console.ReadKey();
                 }
             } while (ok == false);
 
-            return ingreso;
+            return retorno;
         }
 
         // Valida que el codigo sea un int y no tenga mas de 3 cifras.
@@ -92,7 +97,8 @@ namespace A891932.Actividad03
                     {
                         Console.WriteLine("El número ingresado debe ser positivo.\n");
                         Console.ReadKey();                        
-                    } else if(numero > 999)
+                    }
+                    else if(numero > 999)
                     {
                         Console.WriteLine("El número ingresado no debe tener más de 3 digitos\n");
                         Console.ReadKey();                        
@@ -140,10 +146,41 @@ namespace A891932.Actividad03
             return ingreso;
         }
 
-       /* public static double PartidaDoble(double debe, double haber)
+        // Valida que el usuario elija SI o NO.
+        // Util para preguntar si desea continuar.
+        public static string SoN(string textoAImprimir)
         {
-            
-            return 
+            bool ok = false;
+            string opcionElegida;
+
+            do
+            {
+                Console.WriteLine(textoAImprimir);
+                opcionElegida = Console.ReadLine().ToUpper();
+
+                if (opcionElegida == "S")
+                {
+                    ok = true;
+                }
+                else if (opcionElegida == "N")
+                {
+                    ok = true;
+                }
+                else
+                {
+                    Console.WriteLine($"'{opcionElegida}' no es una opcion valida.");
+                    Console.ReadKey();
+                }
+
+            } while(ok == false);
+
+            return opcionElegida;
+        }
+
+        /*public static double PartidaDoble()
+        {
+
+            return ;
         }*/
     }
 }
