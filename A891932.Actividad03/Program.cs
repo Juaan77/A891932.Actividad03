@@ -10,7 +10,7 @@ namespace A891932.Actividad03
     {
         static void Main(string[] args)
         {
-            const string menuPrincipal = "\n\t-MENU PRINCIPAL-\n" +
+            const string menuPrincipal = "\t-MENU PRINCIPAL-\n\n" +
                 "I - Ingresar nuevo asiento\n" +
                 "V - Ver Libro Diario\n" +
                 "P - Ver plan de cuentas\n" +
@@ -25,6 +25,7 @@ namespace A891932.Actividad03
             Console.WriteLine($"\tBienvenido {Environment.UserName} a su gestor de libro diario!\n");            
             LibroDiario.IniciarPlanDeCuentas();
             LibroDiario.IniciarDiario();
+            Console.Clear();
 
             do
             {
@@ -33,19 +34,20 @@ namespace A891932.Actividad03
 
                 switch (opcionElegida)
                 {
-                    case "I":
-                        Console.WriteLine("\tPlan de Cuentas Actual:\n");
+                    case "I":                        
                         LibroDiario.AgregarAsiento();
                         break;
                     case "V":
                         Console.WriteLine("\tLibro Diario Actual:\n");
+                        Console.WriteLine("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
                         LibroDiario.ImprimirDiario();
-                        Console.WriteLine("----Presione una tecla para continuar----");
+                        Console.WriteLine("----Presione una tecla para continuar----\n");
                         Console.ReadKey();
                         break;
                     case "P":
+                        Console.WriteLine("\tPlan de Cuentas Actual:\n");
                         LibroDiario.ImprimirPlanDeCuentas();
-                        Console.WriteLine("----Presione una tecla para continuar----");
+                        Console.WriteLine("----Presione una tecla para continuar----\n");
                         Console.ReadKey();
                         break;
                     case "M":

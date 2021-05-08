@@ -8,8 +8,8 @@ namespace A891932.Actividad03
 {
     class Asiento
     {
-        public int Numero { get; }
-        public DateTime Fecha { get; }
+        public int Numero { get; set; }
+        public DateTime Fecha { get; set; }
 
         public Dictionary<int, double> Debe = new Dictionary<int, double>();    // KEY: Nº de Cuenta || VALUE: Monto
         public Dictionary<int, double> Haber = new Dictionary<int, double>();   // KEY: Nº de Cuenta || VALUE: Monto
@@ -19,7 +19,7 @@ namespace A891932.Actividad03
         public Asiento(int numero)
         {
             Numero = numero;
-            Fecha = DateTime.Today;
+            Fecha = DateTime.Now;
 
             bool salir = false;
             int codigo;
@@ -50,7 +50,7 @@ namespace A891932.Actividad03
                     }
                     else
                     {
-                        debe = Validadores.NumeroPositivo("Ingrese el monto:");
+                        debe = Validadores.NumeroPositivo($"Ingrese el monto de '{LibroDiario.PlanDeCuentas[codigo].Nombre}':");
                         deseaContinuar = Validadores.SoN("Desea agregar mas cuentas dentro del DEBE? (S)i o (N)o");
 
                         if(deseaContinuar == "N")
@@ -78,7 +78,7 @@ namespace A891932.Actividad03
                     }
                     else
                     {
-                        haber = Validadores.NumeroPositivo("Ingrese el monto:");
+                        haber = Validadores.NumeroPositivo($"Ingrese el monto de '{LibroDiario.PlanDeCuentas[codigo].Nombre}':");
                         deseaContinuar = Validadores.SoN("Desea agregar mas cuentas dentro del HABER? (S)i o (N)o");
 
                         if (deseaContinuar == "N")
@@ -118,19 +118,35 @@ namespace A891932.Actividad03
         // Se ejecuta unicamente al inicio.
         public Asiento(string linea)
         {
-            var datos = linea.Split('|');            
-            Numero = int.Parse(datos[0]);
-            Fecha = DateTime.Parse(datos[1]);
-            int codigoCuenta = int.Parse(datos[2]);
-            var debe = double.Parse(datos[3]);
-            var haber = double.Parse(datos[4]);
+            /*Dictionary<int, double> DebeTemporal = new Dictionary<int, double>();   // KEY: Nº de Cuenta || VALUE: Monto
+            Dictionary<int, double> HaberTemporal = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto*/   
+            var datos = linea.Split('|');
+            datos[0].TrimEnd();
+            datos[2].TrimEnd();
+            datos[3].TrimStart();
+            datos[4].TrimStart();
 
-            bool finDeAsiento = false;
-
-            do
+            // Lee la linea y se fija si hay numero de asiento (Si no lo hay es porque la linea es una continuacion de un asiento).
+            if (datos[0] != "          ")    // Solucion guarra para que no crashee al leer texto vacio.
             {
-
-            }while(finDeAsiento = false);
+                Numero = int.Parse(datos[0]);
+                Fecha = DateTime.Parse(datos[1]);
+                Debe.Add(int.Parse(datos[2]), double.Parse(datos[3]));
+                //int codigoCuenta = int.Parse(datos[2]);
+                //double montoDebe = double.Parse(datos[3]);
+                //var montoHaber = double.Parse(datos[4]);
+            }
+            else if (datos[0] == "          ")    // Curso para continuacion de un asiento
+            {
+                if(datos[3] != "          ")      // Verifica si hay un monto en la columna DEBE
+                {
+                    Debe.Add(int.Parse(datos[2]), double.Parse(datos[3]));
+                }
+                else
+                {
+                    Haber.Add(int.Parse(datos[2]), double.Parse(datos[4]));
+                }
+            }
         }
         
         public string Serializar()
@@ -144,22 +160,33 @@ namespace A891932.Actividad03
             {
                 if(contador == 0)
                 {
+                    // Formato de salida:
                     //                  Numero                   |              Fecha            |          CodigoCuenta            |           Debe                    | Haber
-                    retorno += $"{Numero.ToString().PadRight(10)}|{Fecha.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{item.Value.ToString().PadLeft(10)}|\n";
+                    retorno += $"{Numero.ToString().PadRight(10)}|{Fecha.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{item.Value.ToString().PadLeft(10)}|";
                 }
                 else
                 {
-                    //                  Numero         |              Fecha              |          CodigoCuenta            |           Debe                    | Haber
-                    retorno += $"{padding.PadRight(10)}|{padding.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{item.Value.ToString().PadLeft(10)}|\n";
+                    // Formato de salida:
+                    //                  Numero           |              Fecha              |          CodigoCuenta            |           Debe                    | Haber
+                    retorno += $"\n{padding.PadRight(10)}|{padding.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{item.Value.ToString().PadLeft(10)}|";
                 }
 
                 contador++;
             }
 
+            contador = 0;
+
             foreach(var item in Haber)
             {
                 //                  Numero         |              Fecha              |          CodigoCuenta            |           Debe      |             Haber
-                retorno += $"{padding.PadRight(10)}|{padding.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{padding.PadLeft(10)}|{item.Value.ToString().PadLeft(10)}\n";
+                retorno += $"\n{padding.PadRight(10)}|{padding.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{padding.PadLeft(10)}|{item.Value.ToString().PadLeft(10)}";
+                contador++;
+
+                // Inserta un newline al imprimir el ultimo haber para separarlo del proximo asiento.
+                if(contador == Haber.Count())
+                {
+                    retorno += "\n";
+                }
             }
 
             return retorno;

@@ -20,15 +20,13 @@ namespace A891932.Actividad03
                 
                 if (!double.TryParse(Console.ReadLine(), out numero))
                 {
-                    Console.WriteLine("Debe ingresar un número. Intente nuevamente...\n");
-                    Console.ReadKey();
+                    Console.WriteLine("Debe ingresar un número. Intente nuevamente...");
                 }
                 else
                 {
                     if(numero < 0)
                     {
-                        Console.WriteLine("El número ingresado debe ser positivo. Intente nuevamente...\n");
-                        Console.ReadKey();
+                        Console.WriteLine("El número ingresado debe ser positivo. Intente nuevamente...");
                         break;
                     }
                     else
@@ -65,11 +63,15 @@ namespace A891932.Actividad03
                     Console.WriteLine("PASIVO");
                     ok = true;
                     retorno = "Pasivo";
+                }else if (ingreso == "N")
+                {
+                    Console.WriteLine("PATRIMONIO NETO");
+                    ok = true;
+                    retorno = "PatrimonioNeto";
                 }
                 else
                 {
-                    Console.WriteLine($"La opcion '{ingreso}' no es valida. Intente nuevamente...\n");
-                    Console.ReadKey();
+                    Console.WriteLine($"La opcion '{ingreso}' no es valida. Intente nuevamente...");
                 }
             } while (ok == false);
 
@@ -89,19 +91,16 @@ namespace A891932.Actividad03
                 if (!int.TryParse(Console.ReadLine(), out numero))
                 {
                     Console.WriteLine("Debe ingresar un número. Intente nuevamente...");
-                    Console.ReadKey();
                 }
                 else
                 {
                     if (numero < 0)
                     {
                         Console.WriteLine("El número ingresado debe ser positivo. Intente nuevamente...");
-                        Console.ReadKey();                        
                     }
                     else if(numero > 999)
                     {
                         Console.WriteLine("El número ingresado no debe tener más de 3 digitos. Intente nuevamente...");
-                        Console.ReadKey();                        
                     }
                     else
                     {
@@ -129,12 +128,10 @@ namespace A891932.Actividad03
                 if (string.IsNullOrWhiteSpace(ingreso))
                 {
                     Console.WriteLine("Este campo no puede estar vacio. Intente nuevamente...");
-                    Console.ReadKey();
                 }
                 else if (ingreso.Length > 41)
                 {
                     Console.WriteLine("Este campo no puede tener una longitud mayor a 40 caracteres. Intente nuevamente...");
-                    Console.ReadKey();
                 }
                 else
                 {
@@ -169,18 +166,11 @@ namespace A891932.Actividad03
                 else
                 {
                     Console.WriteLine($"'{opcionElegida}' no es una opcion valida. Intente nuevamente...");
-                    Console.ReadKey();
                 }
 
             } while(ok == false);
 
             return opcionElegida;
         }
-
-        /*public static double PartidaDoble()
-        {
-
-            return ;
-        }*/
     }
 }

@@ -92,6 +92,8 @@ namespace A891932.Actividad03
                         // Crea 'Plan de cuentas.txt' en la ubicacion 'C:\'
                         // Agrega una linea de referencia.
                         Console.WriteLine($"Se ha creado el archivo 'Plan de cuentas' en la ubicación '.../bin/Debug' de este proyecto\n");
+                        ubicacionPlanDeCuentas = nombrePlanDeCuentas;
+                        Console.ReadKey();
 
                         using (StreamWriter writer = File.CreateText(nombrePlanDeCuentas))
                         {
@@ -114,7 +116,7 @@ namespace A891932.Actividad03
         {
             int codigo = Validadores.Codigo("Ingrese el codigo de la cuenta nueva");
             string nombre = Validadores.Texto("Ingrese el nombre de la cuenta nueva");
-            string tipo = Validadores.TipoCuenta("Es (A)ctivo o (P)asivo?");
+            string tipo = Validadores.TipoCuenta("Es (A)ctivo, (P)asivo o Patrimonio (N)eto?");
             Cuenta nueva = new Cuenta(codigo, nombre, tipo);
 
             if(PlanDeCuentas.ContainsKey(codigo))
@@ -123,7 +125,7 @@ namespace A891932.Actividad03
                 Console.ReadKey();
             }
             else
-            {
+            {                
                 PlanDeCuentas.Add(nueva.Codigo, nueva);
                 Console.WriteLine($"Se ha agregado la cuenta '{nueva.Nombre}' con el codigo {nueva.Codigo}");
                 Console.ReadKey();
@@ -200,9 +202,8 @@ namespace A891932.Actividad03
 
                     while (!reader.EndOfStream)
                     {
-                        var linea = reader.ReadLine();
-                        var asiento = new Asiento(linea);
-                        Diario.Add(asiento.Numero, asiento);
+                        string linea = reader.ReadLine();
+                        new Asiento(linea);
                         numeroDeAsiento++;                        
                     }
                 }
@@ -255,6 +256,7 @@ namespace A891932.Actividad03
                         // Crea 'Diario.txt' dentro del proyecto.
                         // Agrega una linea de referencia.
                         Console.WriteLine($"Se ha creado el archivo 'Diario.txt' en la ubicación '.../bin/Debug' de este proyecto\n");
+                        Console.ReadKey();
                         ubicacionDiario = nombreDiario;
 
                         using (StreamWriter writer = File.CreateText(nombreDiario))
@@ -292,8 +294,7 @@ namespace A891932.Actividad03
             else
             {
                 foreach (var asiento in Diario)
-                {
-                    Console.WriteLine("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
+                {                    
                     Console.WriteLine(asiento.Value.Serializar());
                 }
             }
@@ -310,8 +311,6 @@ namespace A891932.Actividad03
 
                 foreach (var asiento in Diario)
                 {
-                    var linea = asiento.Value.Serializar();
-                    writer.WriteLine(linea);
                     writer.Write(asiento.Value.Serializar());
                 }
             }
