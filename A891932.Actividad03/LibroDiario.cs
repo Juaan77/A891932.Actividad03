@@ -198,17 +198,46 @@ namespace A891932.Actividad03
 
                 using (var reader = new StreamReader(nombreDiario))     // Importa el txt (si este existe en la ubicacion por defecto)
                 {
-                    reader.ReadLine();                                            // Solución muy sucia para ignorar la primera linea del txt.
+                    int numeroAsiento;
+                    DateTime fecha;
+                    Dictionary<int, double> debe = new Dictionary<int, double>();
+                    Dictionary<int, double> haber = new Dictionary<int, double>();
+                    List<string> renglones = new List<string>();
 
+                    reader.ReadLine();                    
+                    
                     while (!reader.EndOfStream)
-                    {
+                    {                        
                         string linea = reader.ReadLine();
-                        new Asiento(linea);
-                        numeroDeAsiento++;                        
+                        renglones.Add(linea);
+                    }
+
+                    for(int i = 0; i < renglones.Count(); i++)
+                    {
+                        var partes = renglones[i].Split('|');
+                        partes[0].TrimEnd(' ');
+                        partes[2].TrimEnd(' ');
+                        partes[3].TrimStart(' ');
+                        partes[3].TrimStart(' ');
+
+                        if (partes[0] != "")          // Verifica si tiene numero de asiento (Si lo tiene es un asiento nuevo)
+                        {
+                            numeroAsiento = int.Parse(partes[0]);
+                            fecha = DateTime.Parse(partes[1]);
+                            debe.Add(int.Parse(partes[2]), double.Parse(partes[3]));
+                        }
+                        else
+                        {
+                            if (partes[3] == "")
+                            {
+                                haber.Add(int.Parse(partes[2]), double.Parse(partes[4]));
+                            }
+                        }
                     }
                 }
 
                 Console.WriteLine("Libro Diario encontrado!");
+                GrabarDiario();
             }
             else
             {

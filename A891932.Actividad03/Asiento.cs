@@ -116,37 +116,50 @@ namespace A891932.Actividad03
 
         // Constructor para importar asientos desde Diario.txt
         // Se ejecuta unicamente al inicio.
-        public Asiento(string linea)
+        /*public Asiento(string linea)
         {
             /*Dictionary<int, double> DebeTemporal = new Dictionary<int, double>();   // KEY: Nº de Cuenta || VALUE: Monto
-            Dictionary<int, double> HaberTemporal = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto*/   
+            Dictionary<int, double> HaberTemporal = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto   
             var datos = linea.Split('|');
             datos[0].TrimEnd();
             datos[2].TrimEnd();
             datos[3].TrimStart();
             datos[4].TrimStart();
 
-            // Lee la linea y se fija si hay numero de asiento (Si no lo hay es porque la linea es una continuacion de un asiento).
-            if (datos[0] != "          ")    // Solucion guarra para que no crashee al leer texto vacio.
+            // Lee la linea y se fija si hay numero de asiento.
+            // Si no lo hay es porque la linea es una continuacion de un asiento.
+            if (datos[0] != "          ")                   // Solucion guarra para que no crashee al leer texto vacio.
             {
                 Numero = int.Parse(datos[0]);
                 Fecha = DateTime.Parse(datos[1]);
-                Debe.Add(int.Parse(datos[2]), double.Parse(datos[3]));
-                //int codigoCuenta = int.Parse(datos[2]);
-                //double montoDebe = double.Parse(datos[3]);
-                //var montoHaber = double.Parse(datos[4]);
+                DebeTemporal.Add(int.Parse(datos[2]), double.Parse(datos[3]));
             }
             else if (datos[0] == "          ")    // Curso para continuacion de un asiento
             {
-                if(datos[3] != "          ")      // Verifica si hay un monto en la columna DEBE
+                if (datos[3] != "          ")      // Verifica si hay un monto en la columna DEBE
                 {
-                    Debe.Add(int.Parse(datos[2]), double.Parse(datos[3]));
+                    DebeTemporal.Add(int.Parse(datos[2]), double.Parse(datos[3]));
                 }
                 else
                 {
-                    Haber.Add(int.Parse(datos[2]), double.Parse(datos[4]));
+                    HaberTemporal.Add(int.Parse(datos[2]), double.Parse(datos[4]));
                 }
             }
+
+            if(linea == "")
+            {
+                Debe = DebeTemporal;
+                Haber = HaberTemporal;
+                LibroDiario.Diario.Add(Numero, this);          
+            }
+        }*/
+
+        public Asiento(int numero, DateTime fecha, Dictionary<int, double> debe, Dictionary<int, double> haber)
+        {
+            Numero = numero;
+            Fecha = fecha;
+            Debe = debe;
+            Haber = haber;
         }
         
         public string Serializar()
@@ -174,19 +187,10 @@ namespace A891932.Actividad03
                 contador++;
             }
 
-            contador = 0;
-
             foreach(var item in Haber)
             {
                 //                  Numero         |              Fecha              |          CodigoCuenta            |           Debe      |             Haber
                 retorno += $"\n{padding.PadRight(10)}|{padding.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{padding.PadLeft(10)}|{item.Value.ToString().PadLeft(10)}";
-                contador++;
-
-                // Inserta un newline al imprimir el ultimo haber para separarlo del proximo asiento.
-                if(contador == Haber.Count())
-                {
-                    retorno += "\n";
-                }
             }
 
             return retorno;
