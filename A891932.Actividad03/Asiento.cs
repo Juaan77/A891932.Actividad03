@@ -8,7 +8,6 @@ namespace A891932.Actividad03
 {
     class Asiento
     {
-        // NroAsiento|Fecha|CodigoCuenta|Debe|Haber
         public int Numero { get; }
         public DateTime Fecha { get; }
 
@@ -16,6 +15,7 @@ namespace A891932.Actividad03
         public Dictionary<int, double> Haber = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
 
         // Constructor para crear Asientos manualmente dentro de la aplicación.
+        // Se puede invocar desde el menu principal.
         public Asiento(int numero)
         {
             Numero = numero;
@@ -106,6 +106,8 @@ namespace A891932.Actividad03
             Console.Clear();
         }
 
+        // Constructor para importar asientos desde Diario.txt
+        // Se ejecuta unicamente al inicio.
         public Asiento(string linea)
         {
             var datos = linea.Split('|');            
