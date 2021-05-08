@@ -11,20 +11,9 @@ namespace A891932.Actividad03
         // NroAsiento|Fecha|CodigoCuenta|Debe|Haber
         public int Numero { get; }
         public DateTime Fecha { get; }
-        /*public int CodigoCuenta { get; }
-        public double Debe { get; }
-        public double Haber { get; }*/
+
         public Dictionary<int, double> Debe = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
         public Dictionary<int, double> Haber = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
-
-        public Asiento(int numero,int codigoCuenta, double debe, double haber)
-        {
-            Numero = numero;
-            Fecha = DateTime.Today;
-            CodigoCuenta = codigoCuenta;
-            Debe = debe;
-            Haber = Haber;
-        }
 
         // Constructor para crear Asientos manualmente dentro de la aplicación.
         public Asiento(int numero)
@@ -38,7 +27,7 @@ namespace A891932.Actividad03
             double haber = 0;
             double debeTotal = 0;
             double haberTotal = 0;
-            Dictionary<int, double> DebeTemporal = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
+            Dictionary<int, double> DebeTemporal = new Dictionary<int, double>();   // KEY: Nº de Cuenta || VALUE: Monto
             Dictionary<int, double> HaberTemporal = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
 
             do
@@ -94,7 +83,7 @@ namespace A891932.Actividad03
                         }
 
                         HaberTemporal.Add(codigo, haber);
-                        haberTotal += haber;
+                        haberTotal += haber;                        
                     }
                 } while (continuar == true);
 
@@ -119,17 +108,45 @@ namespace A891932.Actividad03
 
         public Asiento(string linea)
         {
-            var datos = linea.Split('|');
+            var datos = linea.Split('|');            
             Numero = int.Parse(datos[0]);
             Fecha = DateTime.Parse(datos[1]);
-            CodigoCuenta = int.Parse(datos[2]);
-            Debe = double.Parse(datos[3]);
-            Haber = double.Parse(datos[4]);
-        }
+            int codigoCuenta = int.Parse(datos[2]);
+            var debe = double.Parse(datos[3]);
+            var haber = double.Parse(datos[4]);
 
+            bool finDeAsiento = false;
+
+            do
+            {
+
+            }while(finDeAsiento = false);
+        }
+        
         public string Serializar()
         {
-            return $"{Numero}|{Fecha}|{CodigoCuenta}|{Debe}|{Haber}";
+            // return $"{Numero}|{Fecha}|{CodigoCuenta}|{Debe}|{Haber}";
+            string retorno = "";
+            string padding = "";    // Solucion guarra para lograr el padding.
+
+            foreach(var item in Debe)
+            {
+                if(Debe[0] == item.Value)
+                {
+                    retorno += $"{Numero.ToString().PadRight(5)} | {Fecha.ToString().PadRight(20)} | {item.Value.ToString().PadLeft(15)} |";
+                }
+                else
+                {
+                    retorno += $"{padding.PadRight(5)}|{padding.ToString().PadRight(20)}|{item.Value.ToString().PadLeft(15)}|";
+                }
+            }
+
+            foreach(var item in Haber)
+            {
+                retorno += $"{padding.PadRight(5)}|{padding.ToString().PadRight(20)}|{padding.PadLeft(15)}|{item.Value.ToString().PadLeft(15)}";
+            }
+
+            return retorno;
         }
 
     }

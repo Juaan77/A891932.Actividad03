@@ -9,17 +9,105 @@ namespace A891932.Actividad03
 {
     class LibroDiario
     {
-        static readonly Dictionary<int, Asiento> Diario = new Dictionary<int, Asiento>();
+        public static readonly Dictionary<int, Asiento> Diario = new Dictionary<int, Asiento>();
         static string nombreDiario = "Diario.txt";
         static string ubicacionDiario;                                                                  // En caso de que la ubicacion predeterminada no se utilice, la nueva se almacenara en esta variable.
+        static int numeroDeAsiento = 0;
 
-        static readonly Dictionary<int, Cuenta> PlanDeCuentas = new Dictionary<int, Cuenta>();
+        public static readonly Dictionary<int, Cuenta> PlanDeCuentas = new Dictionary<int, Cuenta>();
         static string nombrePlanDeCuentas = "Plan de cuentas.txt";
         static string ubicacionPlanDeCuentas;                                                           // En caso de que la ubicacion predeterminada no se utilice, la nueva se almacenara en esta variable.
 
-        
+
         // -----------------------------------METODOS-----------------------------------  //
 
+        // !-------PLAN DE CUENTAS-------! //
+
+        // Busca 'Plan de cuentas.txt' en la ubicación predeterminada.
+        // Si no existe, pregunta si se desea importar uno existente o crear uno nuevo.
+        // Solo se utiliza una vez al iniciar el programa.
+        public static void IniciarPlanDeCuentas()
+        {
+            Console.WriteLine("Buscando 'Plan de cuentas.txt'...");
+            if (File.Exists(nombrePlanDeCuentas))
+            {
+                ubicacionPlanDeCuentas = nombrePlanDeCuentas;
+
+                using (var reader = new StreamReader(nombrePlanDeCuentas))     // Importa el txt (si este existe en la ubicacion por defecto)
+                {
+                    reader.ReadLine();                                            // Solución muy sucia para ignorar la primera linea del txt.
+
+                    while (!reader.EndOfStream)
+                    {
+                        var linea = reader.ReadLine();
+                        var cuenta = new Cuenta(linea);
+                        PlanDeCuentas.Add(cuenta.Codigo, cuenta);
+                    }
+                }
+
+                Console.WriteLine("Plan de cuentas encontrado!");
+            }
+            else
+            {
+                bool ok = false;
+                string opcion;
+
+                do
+                {
+                    Console.WriteLine("No se ha encontrado un Plan de Cuentas. Desea (I)mportar uno existente o (C)rear uno nuevo?");
+                    opcion = Console.ReadLine().ToUpper();
+
+                    // Verifica que 'Plan de cuentas.txt' exista y lo importa.
+                    if (opcion == "I")
+                    {
+                        Console.WriteLine($"Ingrese la ubicación del archivo 'Plan de cuentas.txt' (Ej: 'C:/Plan de cuentas.txt' o 'C:/Users/{Environment.UserName}/documents/Plan de cuentas.txt'");
+                        ubicacionPlanDeCuentas = Console.ReadLine();
+
+                        if (!File.Exists(ubicacionPlanDeCuentas))
+                        {
+                            Console.WriteLine($"No se ha encontrado el archivo 'Plan de cuentas.txt' en {ubicacionPlanDeCuentas}");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            // Importa el txt si lo encuentra
+                            using (var reader = new StreamReader(ubicacionPlanDeCuentas))
+                            {
+                                reader.ReadLine(); // Solución muy sucia y rapida para ignorar la primera linea del txt (Codigo|Nombre|Tipo)
+
+                                while (!reader.EndOfStream)
+                                {
+                                    var linea = reader.ReadLine();
+                                    var cuenta = new Cuenta(linea);
+                                    PlanDeCuentas.Add(cuenta.Codigo, cuenta);
+                                }
+                            }
+
+
+                            ok = true;
+                        }
+                    }
+                    else if (opcion == "C")
+                    {
+                        // Crea 'Plan de cuentas.txt' en la ubicacion 'C:\'
+                        // Agrega una linea de referencia.
+                        Console.WriteLine($"Se ha creado el archivo 'Plan de cuentas' en la ubicación '.../bin/Debug' de este proyecto\n");
+
+                        using (StreamWriter writer = File.CreateText(nombrePlanDeCuentas))
+                        {
+                            writer.Write("Codigo|Nombre|Tipo");
+                        }
+
+                        ok = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"'{opcion}' no es una opción válida.");
+                        Console.ReadKey();
+                    }
+                } while (ok == false);
+            }
+        }
 
         // Agrega una cuenta a Plan verificando que el codigo para identificarla este disponible.
         public static void AgregarCuenta()
@@ -84,91 +172,6 @@ namespace A891932.Actividad03
             Console.ReadKey();
         }
 
-        // Busca 'Plan de cuentas.txt' en la ubicación predeterminada.
-        // Si no existe, pregunta si se desea importar uno existente o crear uno nuevo.
-        // Solo se utiliza una vez al iniciar el programa.
-        public static void IniciarPlanDeCuentas()
-        {
-            Console.WriteLine("Buscando 'Plan de cuentas.txt'...");
-            if (File.Exists(nombrePlanDeCuentas))
-            {
-                ubicacionPlanDeCuentas = nombrePlanDeCuentas;
-
-                using (var reader = new StreamReader(nombrePlanDeCuentas))     // Importa el txt (si este existe en la ubicacion por defecto)
-                {
-                    reader.ReadLine();                                            // Solución muy sucia para ignorar la primera linea del txt.
-
-                    while (!reader.EndOfStream)
-                    {
-                        var linea = reader.ReadLine();
-                        var cuenta = new Cuenta(linea);
-                        PlanDeCuentas.Add(cuenta.Codigo, cuenta);
-                    }
-                }
-
-                Console.WriteLine("Plan de cuentas encontrado!");
-            }
-            else
-            {
-                bool ok = false;
-                string opcion;
-
-                do
-                {
-                    Console.WriteLine("No se ha encontrado un Plan de Cuentas. Desea (I)mportar uno existente o (C)rear uno nuevo?");                    
-                    opcion = Console.ReadLine().ToUpper();
-
-                    // Verifica que 'Plan de cuentas.txt' exista y lo importa.
-                    if (opcion == "I")
-                    {
-                        Console.WriteLine($"Ingrese la ubicación del archivo 'Plan de cuentas.txt' (Ej: 'C:/Plan de cuentas.txt' o 'C:/Users/{Environment.UserName}/documents/Plan de cuentas.txt'"); 
-                        ubicacionPlanDeCuentas = Console.ReadLine();
-
-                        if (!File.Exists(ubicacionPlanDeCuentas))
-                        {
-                            Console.WriteLine($"No se ha encontrado el archivo 'Plan de cuentas.txt' en {ubicacionPlanDeCuentas}");
-                            Console.ReadKey();
-                        }
-                        else
-                        {
-                            // Importa el txt si lo encuentra
-                            using (var reader = new StreamReader(ubicacionPlanDeCuentas))
-                            {
-                                reader.ReadLine(); // Solución muy sucia y rapida para ignorar la primera linea del txt (Codigo|Nombre|Tipo)
-
-                                while (!reader.EndOfStream)
-                                {
-                                    var linea = reader.ReadLine();
-                                    var cuenta = new Cuenta(linea);
-                                    PlanDeCuentas.Add(cuenta.Codigo, cuenta);
-                                }
-                            }
-
-                            
-                            ok = true;
-                        }
-                    }else if(opcion == "C")
-                    {
-                        // Crea 'Plan de cuentas.txt' en la ubicacion 'C:\'
-                        // Agrega una linea de referencia.
-                        Console.WriteLine($"Se ha creado el archivo 'Plan de cuentas' en la ubicación '.../bin/Debug' de este proyecto\n");
-
-                        using (StreamWriter writer = File.CreateText(nombrePlanDeCuentas))
-                        {
-                            writer.Write("Codigo|Nombre|Tipo");
-                        }
-
-                        ok = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"'{opcion}' no es una opción válida.");
-                        Console.ReadKey();
-                    }
-                } while (ok == false);
-            }
-        }
-
         // Guarda los cambios realizados al plan de cuentas en el archivo Plan de cuentas.txt
         private static void GrabarPlan()
         {
@@ -183,7 +186,12 @@ namespace A891932.Actividad03
                 }
             }
         }
-       
+
+        // !-------LIBRO DIARIO-------! //
+
+        // Busca 'Diario.txt' en la ubicación predeterminada.
+        // Si no existe, pregunta si se desea importar uno existente o crear uno nuevo.
+        // Solo se utiliza una vez al iniciar el programa.
         public static void IniciarDiario()
         {
             Console.WriteLine($"Buscando 'Diario.txt'...");
@@ -200,6 +208,7 @@ namespace A891932.Actividad03
                         var linea = reader.ReadLine();
                         var asiento = new Asiento(linea);
                         Diario.Add(asiento.Numero, asiento);
+                        numeroDeAsiento++;                        
                     }
                 }
 
@@ -238,6 +247,7 @@ namespace A891932.Actividad03
                                     var linea = reader.ReadLine();
                                     var asiento = new Asiento(linea);
                                     Diario.Add(asiento.Numero, asiento);
+                                    numeroDeAsiento++;
                                 }
                             }
 
@@ -267,6 +277,16 @@ namespace A891932.Actividad03
             }
         }
 
+
+        // Agrega un asiento al libro diario.
+        public static void AgregarAsiento()
+        {
+            numeroDeAsiento++;
+            Diario.Add(numeroDeAsiento, new Asiento(numeroDeAsiento));
+            GrabarDiario();
+        }
+
+        // Print del diccionario Diario.
         public static void ImprimirDiario()
         {
             Console.WriteLine("\tLibro Diario Actual:\n");
@@ -279,14 +299,14 @@ namespace A891932.Actividad03
             {
                 foreach (var asiento in Diario)
                 {
-                    Console.WriteLine($"{asiento.Key} | {asiento.Value.Fecha} | {asiento.Value.CodigoCuenta} | {asiento.Value.Debe} | {asiento.Value.Haber} ");
+                    asiento.Value.Serializar();
                 }
             }
 
-            Console.WriteLine("----Presione una tecla para continuar----\n");
-            Console.ReadKey();
+            Console.WriteLine("-----------------------\n");
         }
 
+        // Guarda los cambios en el archivo Diario.txt
         private static void GrabarDiario()
         {
             using (var writer = new StreamWriter(ubicacionDiario, append: false))
