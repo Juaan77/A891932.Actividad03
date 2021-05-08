@@ -11,8 +11,8 @@ namespace A891932.Actividad03
         public int Numero { get; }
         public DateTime Fecha { get; }
 
-        public Dictionary<int, double> Debe = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
-        public Dictionary<int, double> Haber = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
+        public Dictionary<int, double> Debe = new Dictionary<int, double>();    // KEY: Nº de Cuenta || VALUE: Monto
+        public Dictionary<int, double> Haber = new Dictionary<int, double>();   // KEY: Nº de Cuenta || VALUE: Monto
 
         // Constructor para crear Asientos manualmente dentro de la aplicación.
         // Se puede invocar desde el menu principal.
@@ -28,22 +28,24 @@ namespace A891932.Actividad03
             double debeTotal = 0;
             double haberTotal = 0;
             Dictionary<int, double> DebeTemporal = new Dictionary<int, double>();   // KEY: Nº de Cuenta || VALUE: Monto
-            Dictionary<int, double> HaberTemporal = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto
+            Dictionary<int, double> HaberTemporal = new Dictionary<int, double>();  // KEY: Nº de Cuenta || VALUE: Monto            
 
             do
             {
                 bool continuar = true;
                 string deseaContinuar;
-                Console.WriteLine("Codigos Disponibles:\n");
+                Console.WriteLine("Codigos de cuentas disponibles:\n");
                 LibroDiario.ImprimirPlanDeCuentas();
 
                 do
                 {
-                    codigo = Validadores.Codigo($"Ingrese el codigo de cuenta del DEBE:");
+                    debe = 0;          // Reset de variables para evitar acarreo de errores.
+                    haber = 0;
+                    codigo = Validadores.Codigo($"\nIngrese el codigo de cuenta del DEBE:");
 
                     if (!LibroDiario.PlanDeCuentas.ContainsKey(codigo))
                     {
-                        Console.WriteLine($"El codigo '{codigo}' no está asociado a ninguna cuenta dentro del Plan de cuentas");
+                        Console.WriteLine($"El codigo '{codigo}' no está asociado a ninguna cuenta dentro del Plan de cuentas. Intente nuevamente...");
                         Console.ReadKey();
                     }
                     else
@@ -65,11 +67,13 @@ namespace A891932.Actividad03
 
                 do
                 {
-                    codigo = Validadores.Codigo($"Ingrese el codigo de cuenta del HABER:");
+                    debe = 0;       // Reset de variables para evitar acarreo de errores.
+                    haber = 0;
+                    codigo = Validadores.Codigo($"\nIngrese el codigo de cuenta del HABER:");
 
                     if (!LibroDiario.PlanDeCuentas.ContainsKey(codigo))
                     {
-                        Console.WriteLine($"El codigo '{codigo}' no está asociado a ninguna cuenta dentro del Plan de cuentas");
+                        Console.WriteLine($"El codigo '{codigo}' no está asociado a ninguna cuenta dentro del Plan de cuentas. Intente nuevamente...");
                         Console.ReadKey();
                     }
                     else
@@ -87,12 +91,14 @@ namespace A891932.Actividad03
                     }
                 } while (continuar == true);
 
-                if(debeTotal != haber)
+                if(debeTotal != haberTotal)
                 {
                     Console.WriteLine($"ERROR: El DEBE ({debeTotal}) no es IGUAL al HABER ({haberTotal}). Intente nuevamente...");
                     Console.ReadKey();
                     DebeTemporal.Clear();
                     HaberTemporal.Clear();
+                    debeTotal = 0;              // Reset de variables para eliminar acarreo de errores.
+                    haberTotal = 0;             // Reset de variables para eliminar acarreo de errores.
                 }
                 else
                 {
@@ -103,6 +109,8 @@ namespace A891932.Actividad03
 
             } while (salir == false);
 
+            Console.WriteLine($"Se ha creado el asiento Nº{Numero} con exito!");
+            Console.ReadKey();
             Console.Clear();
         }
 
@@ -127,25 +135,31 @@ namespace A891932.Actividad03
         
         public string Serializar()
         {
-            // return $"{Numero}|{Fecha}|{CodigoCuenta}|{Debe}|{Haber}";
+            // return $"{}";
             string retorno = "";
             string padding = "";    // Solucion guarra para lograr el padding.
+            int contador = 0;
 
             foreach(var item in Debe)
             {
-                if(Debe[0] == item.Value)
+                if(contador == 0)
                 {
-                    retorno += $"{Numero.ToString().PadRight(5)} | {Fecha.ToString().PadRight(20)} | {item.Value.ToString().PadLeft(15)} |";
+                    //                  Numero                   |              Fecha            |          CodigoCuenta            |           Debe                    | Haber
+                    retorno += $"{Numero.ToString().PadRight(10)}|{Fecha.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{item.Value.ToString().PadLeft(10)}|\n";
                 }
                 else
                 {
-                    retorno += $"{padding.PadRight(5)}|{padding.ToString().PadRight(20)}|{item.Value.ToString().PadLeft(15)}|";
+                    //                  Numero         |              Fecha              |          CodigoCuenta            |           Debe                    | Haber
+                    retorno += $"{padding.PadRight(10)}|{padding.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{item.Value.ToString().PadLeft(10)}|\n";
                 }
+
+                contador++;
             }
 
             foreach(var item in Haber)
             {
-                retorno += $"{padding.PadRight(5)}|{padding.ToString().PadRight(20)}|{padding.PadLeft(15)}|{item.Value.ToString().PadLeft(15)}";
+                //                  Numero         |              Fecha              |          CodigoCuenta            |           Debe      |             Haber
+                retorno += $"{padding.PadRight(10)}|{padding.ToString().PadRight(17)}|{item.Key.ToString().PadRight(12)}|{padding.PadLeft(10)}|{item.Value.ToString().PadLeft(10)}\n";
             }
 
             return retorno;

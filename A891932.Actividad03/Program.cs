@@ -34,13 +34,19 @@ namespace A891932.Actividad03
                 switch (opcionElegida)
                 {
                     case "I":
+                        Console.WriteLine("\tPlan de Cuentas Actual:\n");
                         LibroDiario.AgregarAsiento();
                         break;
                     case "V":
+                        Console.WriteLine("\tLibro Diario Actual:\n");
                         LibroDiario.ImprimirDiario();
+                        Console.WriteLine("----Presione una tecla para continuar----");
+                        Console.ReadKey();
                         break;
                     case "P":
                         LibroDiario.ImprimirPlanDeCuentas();
+                        Console.WriteLine("----Presione una tecla para continuar----");
+                        Console.ReadKey();
                         break;
                     case "M":
                         do

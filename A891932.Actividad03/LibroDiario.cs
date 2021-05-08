@@ -65,7 +65,7 @@ namespace A891932.Actividad03
 
                         if (!File.Exists(ubicacionPlanDeCuentas))
                         {
-                            Console.WriteLine($"No se ha encontrado el archivo 'Plan de cuentas.txt' en {ubicacionPlanDeCuentas}");
+                            Console.WriteLine($"No se ha encontrado el archivo 'Plan de cuentas.txt' en {ubicacionPlanDeCuentas}. Intente nuevamente...");
                             Console.ReadKey();
                         }
                         else
@@ -102,7 +102,7 @@ namespace A891932.Actividad03
                     }
                     else
                     {
-                        Console.WriteLine($"'{opcion}' no es una opción válida.");
+                        Console.WriteLine($"'{opcion}' no es una opción válida. Intente nuevamente...");
                         Console.ReadKey();
                     }
                 } while (ok == false);
@@ -119,13 +119,13 @@ namespace A891932.Actividad03
 
             if(PlanDeCuentas.ContainsKey(codigo))
             {
-                Console.WriteLine($"Error: El codigo '{codigo}' ya esta siendo utilizado por otra cuenta\n");
+                Console.WriteLine($"Error: El codigo '{codigo}' ya esta siendo utilizado por otra cuenta. Intente con otro codigo...");
                 Console.ReadKey();
             }
             else
             {
                 PlanDeCuentas.Add(nueva.Codigo, nueva);
-                Console.WriteLine($"Se ha agregado la cuenta '{nueva.Nombre}' con el codigo {nueva.Codigo}\n");
+                Console.WriteLine($"Se ha agregado la cuenta '{nueva.Nombre}' con el codigo {nueva.Codigo}");
                 Console.ReadKey();
                 GrabarPlan();
             }
@@ -139,7 +139,7 @@ namespace A891932.Actividad03
             
             if (!PlanDeCuentas.TryGetValue(codigo, out var cuentaEliminada))
             {
-                Console.WriteLine($"No existe una cuenta con el codigo '{codigo}'");
+                Console.WriteLine($"No existe una cuenta con el codigo '{codigo}'. Intente nuevamente...");
                 Console.ReadKey();
             }
             else
@@ -154,8 +154,6 @@ namespace A891932.Actividad03
         // Print de consola del diccionario Plan.
         public static void ImprimirPlanDeCuentas()
         {
-            Console.WriteLine("\tPlan de Cuentas Actual:\n");
-
             if (PlanDeCuentas.Count == 0)
             {
                 Console.WriteLine("No se han ingresado cuentas...\n");
@@ -167,9 +165,6 @@ namespace A891932.Actividad03
                     Console.WriteLine($"{cuenta.Key} | {cuenta.Value.Nombre} | {cuenta.Value.Tipo} ");
                 }
             }
-
-            Console.WriteLine("----Presione una tecla para continuar----\n");
-            Console.ReadKey();
         }
 
         // Guarda los cambios realizados al plan de cuentas en el archivo Plan de cuentas.txt
@@ -232,7 +227,7 @@ namespace A891932.Actividad03
 
                         if (!File.Exists(ubicacionDiario))
                         {
-                            Console.WriteLine($"No se ha encontrado el archivo 'Diario.txt' en {ubicacionDiario}");
+                            Console.WriteLine($"No se ha encontrado el archivo 'Diario.txt' en {ubicacionDiario}. Intente nuevamente...");
                             Console.ReadKey();
                         }
                         else
@@ -260,17 +255,18 @@ namespace A891932.Actividad03
                         // Crea 'Diario.txt' dentro del proyecto.
                         // Agrega una linea de referencia.
                         Console.WriteLine($"Se ha creado el archivo 'Diario.txt' en la ubicación '.../bin/Debug' de este proyecto\n");
+                        ubicacionDiario = nombreDiario;
 
                         using (StreamWriter writer = File.CreateText(nombreDiario))
                         {
-                            writer.Write("NroAsiento|Fecha|CodigoCuenta|Debe|Haber");
+                            writer.Write("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
                         }
 
                         ok = true;
                     }
                     else
                     {
-                        Console.WriteLine($"'{opcion}' no es una opción válida.");
+                        Console.WriteLine($"'{opcion}' no es una opción válida. Intente nuevamente...");
                         Console.ReadKey();
                     }
                 } while (ok == false);
@@ -289,8 +285,6 @@ namespace A891932.Actividad03
         // Print del diccionario Diario.
         public static void ImprimirDiario()
         {
-            Console.WriteLine("\tLibro Diario Actual:\n");
-
             if (Diario.Count == 0)
             {
                 Console.WriteLine("No se han ingresado asientos...\n");
@@ -299,11 +293,12 @@ namespace A891932.Actividad03
             {
                 foreach (var asiento in Diario)
                 {
-                    asiento.Value.Serializar();
+                    Console.WriteLine("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
+                    Console.WriteLine(asiento.Value.Serializar());
                 }
             }
 
-            Console.WriteLine("-----------------------\n");
+
         }
 
         // Guarda los cambios en el archivo Diario.txt
@@ -311,12 +306,13 @@ namespace A891932.Actividad03
         {
             using (var writer = new StreamWriter(ubicacionDiario, append: false))
             {
-                writer.WriteLine("NroAsiento | Fecha | CodigoCuenta | Debe | Haber");
+                writer.WriteLine("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
 
-                foreach (var cuentas in Diario.Values)
+                foreach (var asiento in Diario)
                 {
-                    var linea = cuentas.Serializar();
+                    var linea = asiento.Value.Serializar();
                     writer.WriteLine(linea);
+                    writer.Write(asiento.Value.Serializar());
                 }
             }
         }       
