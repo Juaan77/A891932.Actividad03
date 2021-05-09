@@ -25,6 +25,7 @@ namespace A891932.Actividad03
             Console.WriteLine($"\tBienvenido {Environment.UserName} a su gestor de libro diario!\n");            
             LibroDiario.IniciarPlanDeCuentas();
             LibroDiario.IniciarDiario();
+            Console.ReadKey();
             Console.Clear();
 
             do
@@ -39,7 +40,6 @@ namespace A891932.Actividad03
                         break;
                     case "V":
                         Console.WriteLine("\tLibro Diario Actual:\n");
-                        Console.WriteLine("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
                         LibroDiario.ImprimirDiario();
                         Console.WriteLine("----Presione una tecla para continuar----\n");
                         Console.ReadKey();

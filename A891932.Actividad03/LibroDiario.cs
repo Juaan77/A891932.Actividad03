@@ -11,12 +11,10 @@ namespace A891932.Actividad03
     {
         public static readonly Dictionary<int, Asiento> Diario = new Dictionary<int, Asiento>();
         static string nombreDiario = "Diario.txt";
-        static string ubicacionDiario;                                                                  // En caso de que la ubicacion predeterminada no se utilice, la nueva se almacenara en esta variable.
-        static int numeroDeAsiento = 0;
+        static int contadorDeAsientos = 0;
 
         public static readonly Dictionary<int, Cuenta> PlanDeCuentas = new Dictionary<int, Cuenta>();
         static string nombrePlanDeCuentas = "Plan de cuentas.txt";
-        static string ubicacionPlanDeCuentas;                                                           // En caso de que la ubicacion predeterminada no se utilice, la nueva se almacenara en esta variable.
 
 
         // -----------------------------------METODOS-----------------------------------  //
@@ -31,8 +29,6 @@ namespace A891932.Actividad03
             Console.WriteLine("Buscando 'Plan de cuentas.txt'...");
             if (File.Exists(nombrePlanDeCuentas))
             {
-                ubicacionPlanDeCuentas = nombrePlanDeCuentas;
-
                 using (var reader = new StreamReader(nombrePlanDeCuentas))     // Importa el txt (si este existe en la ubicacion por defecto)
                 {
                     reader.ReadLine();                                            // Solución muy sucia para ignorar la primera linea del txt.
@@ -49,65 +45,15 @@ namespace A891932.Actividad03
             }
             else
             {
-                bool ok = false;
-                string opcion;
+                // Crea 'Plan de cuentas.txt' en la ubicacion 'C:\'
+                // Agrega una linea de referencia.
+                Console.WriteLine($"Se ha creado el archivo 'Plan de cuentas' en la ubicación '.../bin/Debug' de este proyecto\n");                
+                Console.ReadKey();
 
-                do
+                using (StreamWriter writer = File.CreateText(nombrePlanDeCuentas))
                 {
-                    Console.WriteLine("No se ha encontrado un Plan de Cuentas. Desea (I)mportar uno existente o (C)rear uno nuevo?");
-                    opcion = Console.ReadLine().ToUpper();
-
-                    // Verifica que 'Plan de cuentas.txt' exista y lo importa.
-                    if (opcion == "I")
-                    {
-                        Console.WriteLine($"Ingrese la ubicación del archivo 'Plan de cuentas.txt' (Ej: 'C:/Plan de cuentas.txt' o 'C:/Users/{Environment.UserName}/documents/Plan de cuentas.txt'");
-                        ubicacionPlanDeCuentas = Console.ReadLine();
-
-                        if (!File.Exists(ubicacionPlanDeCuentas))
-                        {
-                            Console.WriteLine($"No se ha encontrado el archivo 'Plan de cuentas.txt' en {ubicacionPlanDeCuentas}. Intente nuevamente...");
-                            Console.ReadKey();
-                        }
-                        else
-                        {
-                            // Importa el txt si lo encuentra
-                            using (var reader = new StreamReader(ubicacionPlanDeCuentas))
-                            {
-                                reader.ReadLine(); // Solución muy sucia y rapida para ignorar la primera linea del txt (Codigo|Nombre|Tipo)
-
-                                while (!reader.EndOfStream)
-                                {
-                                    var linea = reader.ReadLine();
-                                    var cuenta = new Cuenta(linea);
-                                    PlanDeCuentas.Add(cuenta.Codigo, cuenta);
-                                }
-                            }
-
-
-                            ok = true;
-                        }
-                    }
-                    else if (opcion == "C")
-                    {
-                        // Crea 'Plan de cuentas.txt' en la ubicacion 'C:\'
-                        // Agrega una linea de referencia.
-                        Console.WriteLine($"Se ha creado el archivo 'Plan de cuentas' en la ubicación '.../bin/Debug' de este proyecto\n");
-                        ubicacionPlanDeCuentas = nombrePlanDeCuentas;
-                        Console.ReadKey();
-
-                        using (StreamWriter writer = File.CreateText(nombrePlanDeCuentas))
-                        {
-                            writer.Write("Codigo|Nombre|Tipo");
-                        }
-
-                        ok = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"'{opcion}' no es una opción válida. Intente nuevamente...");
-                        Console.ReadKey();
-                    }
-                } while (ok == false);
+                    writer.Write("Codigo|Nombre|Tipo");
+                }
             }
         }
 
@@ -172,7 +118,7 @@ namespace A891932.Actividad03
         // Guarda los cambios realizados al plan de cuentas en el archivo Plan de cuentas.txt
         private static void GrabarPlan()
         {
-            using (var writer = new StreamWriter(ubicacionPlanDeCuentas, append: false))
+            using (var writer = new StreamWriter(nombrePlanDeCuentas, append: false))
             {
                 writer.WriteLine("Codigo|Nombre|Tipo");
 
@@ -194,17 +140,15 @@ namespace A891932.Actividad03
             Console.WriteLine($"Buscando 'Diario.txt'...");
             if (File.Exists(nombreDiario))
             {
-                ubicacionDiario = nombreDiario;
-
                 using (var reader = new StreamReader(nombreDiario))     // Importa el txt (si este existe en la ubicacion por defecto)
                 {
                     int numeroAsiento;
                     DateTime fecha;
-                    Dictionary<int, double> debe = new Dictionary<int, double>();
-                    Dictionary<int, double> haber = new Dictionary<int, double>();
+                    Dictionary<int, double> debeTemporal = new Dictionary<int, double>();
+                    Dictionary<int, double> haberTemporal = new Dictionary<int, double>();
                     List<string> renglones = new List<string>();
 
-                    reader.ReadLine();                    
+                    reader.ReadLine();
                     
                     while (!reader.EndOfStream)
                     {                        
@@ -212,26 +156,44 @@ namespace A891932.Actividad03
                         renglones.Add(linea);
                     }
 
-                    for(int i = 0; i < renglones.Count(); i++)
+                    foreach (var renglon in renglones)
                     {
-                        var partes = renglones[i].Split('|');
-                        partes[0].TrimEnd(' ');
-                        partes[2].TrimEnd(' ');
-                        partes[3].TrimStart(' ');
-                        partes[3].TrimStart(' ');
+                        if (char.IsDigit(renglon[0]))                                                               // Controla que el primer caracter es un digito (Nº de Asiento)
+                        {
+                            var columnas = renglon.Split('|');
+                            numeroAsiento = int.Parse(columnas[0]);
+                            fecha = DateTime.Parse(columnas[1]);
+                            var renglonSiguiente = renglones.IndexOf(renglon) +1;
+                            debeTemporal.Add(int.Parse(columnas[2]), double.Parse(columnas[3]));
 
-                        if (partes[0] != "")          // Verifica si tiene numero de asiento (Si lo tiene es un asiento nuevo)
-                        {
-                            numeroAsiento = int.Parse(partes[0]);
-                            fecha = DateTime.Parse(partes[1]);
-                            debe.Add(int.Parse(partes[2]), double.Parse(partes[3]));
-                        }
-                        else
-                        {
-                            if (partes[3] == "")
+                            if (!char.IsDigit(renglones[renglonSiguiente][0]))                                     // Verifica que el renglon siguiente no tenga Nº de asiento
                             {
-                                haber.Add(int.Parse(partes[2]), double.Parse(partes[4]));
+                                var columnasRenglonSiguiente = renglones[renglonSiguiente].Split('|');
+
+                                if (!string.IsNullOrWhiteSpace(columnasRenglonSiguiente[3]))                       // Verifica si corresponde al debe o al haber
+                                {
+
+                                    debeTemporal.Add(int.Parse(columnasRenglonSiguiente[2]), double.Parse(columnasRenglonSiguiente[3]));
+                                }
+                                else
+                                {
+                                    if (!char.IsDigit(renglones[renglonSiguiente][0]))
+                                    {
+                                        haberTemporal.Add(int.Parse(columnasRenglonSiguiente[2]), double.Parse(columnasRenglonSiguiente[4]));
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+                                }
                             }
+
+                            Asiento asientoImportado = new Asiento(numeroAsiento, fecha, debeTemporal, haberTemporal);
+                            reader.Close();
+                            Diario.Add(numeroAsiento, asientoImportado);
+                            contadorDeAsientos++;
+                            debeTemporal.Clear();
+                            haberTemporal.Clear();
                         }
                     }
                 }
@@ -241,66 +203,15 @@ namespace A891932.Actividad03
             }
             else
             {
-                bool ok = false;
-                string opcion;
+                // Crea 'Diario.txt' dentro del proyecto.
+                // Agrega una linea de referencia.
+                Console.WriteLine($"Se ha creado el archivo 'Diario.txt' en la ubicación '.../bin/Debug' de este proyecto\n");
+                Console.ReadKey();
 
-                do
+                using (StreamWriter writer = File.CreateText(nombreDiario))
                 {
-                    Console.WriteLine("No se ha encontrado un Libro Diario. Desea (I)mportar uno existente o (C)rear uno nuevo?");
-                    opcion = Console.ReadLine().ToUpper();
-
-                    // Verifica que 'Diario.txt' exista y lo importa.
-                    if (opcion == "I")
-                    {
-                        Console.WriteLine($"Ingrese la ubicación del archivo 'Diario.txt' (Ej: 'C:/Users/{Environment.UserName}/documents/Diario.txt'");
-                        ubicacionDiario = Console.ReadLine();
-
-                        if (!File.Exists(ubicacionDiario))
-                        {
-                            Console.WriteLine($"No se ha encontrado el archivo 'Diario.txt' en {ubicacionDiario}. Intente nuevamente...");
-                            Console.ReadKey();
-                        }
-                        else
-                        {
-                            // Importa el txt si lo encuentra
-                            using (var reader = new StreamReader(ubicacionDiario))
-                            {
-                                reader.ReadLine(); // Solución muy sucia y rapida para ignorar la primera linea del txt (NroAsiento|Fecha|CodigoCuenta|Debe|Haber)
-
-                                while (!reader.EndOfStream)
-                                {
-                                    var linea = reader.ReadLine();
-                                    var asiento = new Asiento(linea);
-                                    Diario.Add(asiento.Numero, asiento);
-                                    numeroDeAsiento++;
-                                }
-                            }
-
-
-                            ok = true;
-                        }
-                    }
-                    else if (opcion == "C")
-                    {
-                        // Crea 'Diario.txt' dentro del proyecto.
-                        // Agrega una linea de referencia.
-                        Console.WriteLine($"Se ha creado el archivo 'Diario.txt' en la ubicación '.../bin/Debug' de este proyecto\n");
-                        Console.ReadKey();
-                        ubicacionDiario = nombreDiario;
-
-                        using (StreamWriter writer = File.CreateText(nombreDiario))
-                        {
-                            writer.Write("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
-                        }
-
-                        ok = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"'{opcion}' no es una opción válida. Intente nuevamente...");
-                        Console.ReadKey();
-                    }
-                } while (ok == false);
+                    writer.Write("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
+                }
             }
         }
 
@@ -308,23 +219,27 @@ namespace A891932.Actividad03
         // Agrega un asiento al libro diario.
         public static void AgregarAsiento()
         {
-            numeroDeAsiento++;
-            Diario.Add(numeroDeAsiento, new Asiento(numeroDeAsiento));
+            contadorDeAsientos++;
+            Diario.Add(contadorDeAsientos, new Asiento(contadorDeAsientos));            
             GrabarDiario();
         }
 
         // Print del diccionario Diario.
         public static void ImprimirDiario()
         {
+            string retorno = "";
+
             if (Diario.Count == 0)
             {
                 Console.WriteLine("No se han ingresado asientos...\n");
             }
             else
             {
+                Console.WriteLine("NroAsiento | Fecha | CodigoCuenta | Debe | Haber");
                 foreach (var asiento in Diario)
                 {                    
-                    Console.WriteLine(asiento.Value.Serializar());
+                    retorno += asiento.Value.Serializar();
+                    Console.WriteLine(retorno);
                 }
             }
 
@@ -334,13 +249,16 @@ namespace A891932.Actividad03
         // Guarda los cambios en el archivo Diario.txt
         private static void GrabarDiario()
         {
-            using (var writer = new StreamWriter(ubicacionDiario, append: false))
-            {
-                writer.WriteLine("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
+            string retorno = "";
 
+            using (var writer = new StreamWriter(nombreDiario, append: false))
+            {
+                writer.WriteLine("NroAsiento | Fecha | CodigoCuenta | Debe | Haber");
+                
                 foreach (var asiento in Diario)
                 {
-                    writer.Write(asiento.Value.Serializar());
+                    retorno = asiento.Value.Serializar();
+                    writer.WriteLine(retorno);
                 }
             }
         }       
