@@ -9,7 +9,7 @@ namespace A891932.Actividad03
 {
     class LibroDiario
     {
-        public static readonly Dictionary<int, Asiento> Diario = new Dictionary<int, Asiento>();
+        public static Dictionary<int, Asiento> Diario = new Dictionary<int, Asiento>();
         static string nombreDiario = "Diario.txt";
         static int contadorDeAsientos = 0;
 
@@ -142,29 +142,34 @@ namespace A891932.Actividad03
             {
                 using (var reader = new StreamReader(nombreDiario))     // Importa el txt (si este existe en la ubicacion por defecto)
                 {
-                    int numeroAsiento;
-                    DateTime fecha;
-                    Dictionary<int, double> debeTemporal = new Dictionary<int, double>();
-                    Dictionary<int, double> haberTemporal = new Dictionary<int, double>();
+                    int numeroAsiento = 0;
+                    DateTime fecha = DateTime.Now;
                     List<string> renglones = new List<string>();
 
                     reader.ReadLine();
-                    
+
                     while (!reader.EndOfStream)
-                    {                        
+                    {
                         string linea = reader.ReadLine();
                         renglones.Add(linea);
                     }
 
                     foreach (var renglon in renglones)
                     {
+                        Dictionary<int, double> debeTemporal = new Dictionary<int, double>();
+                        Dictionary<int, double> haberTemporal = new Dictionary<int, double>();
+                        bool finDeAsientoActual = false;
+                        int i = 1;
+
+
                         if (char.IsDigit(renglon[0]))                                                               // Controla que el primer caracter es un digito (Nº de Asiento)
                         {
                             var columnas = renglon.Split('|');
                             numeroAsiento = int.Parse(columnas[0]);
                             fecha = DateTime.Parse(columnas[1]);
-                            var renglonSiguiente = renglones.IndexOf(renglon) +1;
                             debeTemporal.Add(int.Parse(columnas[2]), double.Parse(columnas[3]));
+
+                            int renglonSiguiente = renglones.IndexOf(renglon) + i;
 
                             if (!char.IsDigit(renglones[renglonSiguiente][0]))                                     // Verifica que el renglon siguiente no tenga Nº de asiento
                             {
@@ -181,25 +186,16 @@ namespace A891932.Actividad03
                                     {
                                         haberTemporal.Add(int.Parse(columnasRenglonSiguiente[2]), double.Parse(columnasRenglonSiguiente[4]));
                                     }
-                                    else
-                                    {
-                                        continue;
-                                    }
                                 }
                             }
 
                             Asiento asientoImportado = new Asiento(numeroAsiento, fecha, debeTemporal, haberTemporal);
                             reader.Close();
-                            Diario.Add(numeroAsiento, asientoImportado);
                             contadorDeAsientos++;
-                            debeTemporal.Clear();
-                            haberTemporal.Clear();
-                        }
+                            Diario.Add(asientoImportado.Numero, asientoImportado);
+                        }                                               
                     }
                 }
-
-                Console.WriteLine("Libro Diario encontrado!");
-                GrabarDiario();
             }
             else
             {
@@ -213,8 +209,9 @@ namespace A891932.Actividad03
                     writer.Write("NroAsiento|      Fecha      |CodigoCuenta|   Debe   |   Haber  ");
                 }
             }
+            Console.WriteLine("Libro Diario encontrado!");
+            GrabarDiario();
         }
-
 
         // Agrega un asiento al libro diario.
         public static void AgregarAsiento()
@@ -227,8 +224,6 @@ namespace A891932.Actividad03
         // Print del diccionario Diario.
         public static void ImprimirDiario()
         {
-            string retorno = "";
-
             if (Diario.Count == 0)
             {
                 Console.WriteLine("No se han ingresado asientos...\n");
@@ -238,8 +233,7 @@ namespace A891932.Actividad03
                 Console.WriteLine("NroAsiento | Fecha | CodigoCuenta | Debe | Haber");
                 foreach (var asiento in Diario)
                 {                    
-                    retorno += asiento.Value.Serializar();
-                    Console.WriteLine(retorno);
+                    Console.WriteLine(asiento.Value.Serializar());
                 }
             }
 
@@ -249,16 +243,13 @@ namespace A891932.Actividad03
         // Guarda los cambios en el archivo Diario.txt
         private static void GrabarDiario()
         {
-            string retorno = "";
-
             using (var writer = new StreamWriter(nombreDiario, append: false))
             {
                 writer.WriteLine("NroAsiento | Fecha | CodigoCuenta | Debe | Haber");
                 
                 foreach (var asiento in Diario)
                 {
-                    retorno = asiento.Value.Serializar();
-                    writer.WriteLine(retorno);
+                    writer.WriteLine(asiento.Value.Serializar());
                 }
             }
         }       

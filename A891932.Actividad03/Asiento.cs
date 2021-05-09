@@ -40,6 +40,7 @@ namespace A891932.Actividad03
                 {
                     debe = 0;          // Reset de variables para evitar acarreo de errores.
                     haber = 0;
+
                     codigo = Validadores.Codigo($"\nIngrese el codigo de cuenta del DEBE:");
 
                     if (!LibroDiario.PlanDeCuentas.ContainsKey(codigo))
@@ -68,6 +69,7 @@ namespace A891932.Actividad03
                 {
                     debe = 0;       // Reset de variables para evitar acarreo de errores.
                     haber = 0;
+
                     codigo = Validadores.Codigo($"\nIngrese el codigo de cuenta del HABER:");
 
                     if (!LibroDiario.PlanDeCuentas.ContainsKey(codigo))
@@ -119,7 +121,7 @@ namespace A891932.Actividad03
         {
             Numero = numero;
             Fecha = fecha;
-            Debe = debe;
+            Debe = debe ;
             Haber = haber;
         }
         
@@ -136,13 +138,13 @@ namespace A891932.Actividad03
                 {
                     // Formato de salida:
                     //                  NroAsiento                   |Fecha  |          CodigoCuenta                |           Debe                         |Haber
-                    retorno += $"\n{Numero.ToString().PadLeft(10, ' ')}|{Fecha}|{item.Key.ToString().PadLeft(12, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}|";
+                    retorno += $"{Numero.ToString().PadLeft(10, ' ')}|{Fecha}|{item.Key.ToString().PadLeft(12, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}|";
                 }
                 else
                 {
                     // Formato de salida:
                     //                    NroAsiento          |         Fecha             |             CodigoCuenta              |             Debe                        |Haber  
-                    retorno += $"\n{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}|";
+                    retorno += $"{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}|";
                 }
 
                 contador++;
@@ -155,12 +157,12 @@ namespace A891932.Actividad03
                 if (contador < Haber.Count)
                 {
                     //                  NroAsiento            |      Fecha                |CodigoCuenta                           |         Debe              |         Haber  
-                    retorno += $"\n{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}";
+                    retorno += $"{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}";
                 }
                 else
                 {
                     //                  NroAsiento            |      Fecha                |         CodigoCuenta                  |         Debe              |         Haber  
-                    retorno += $"\n{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}\n";
+                    retorno += $"{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}";
                 }
 
             }
