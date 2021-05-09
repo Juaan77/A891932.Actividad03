@@ -161,19 +161,58 @@ namespace A891932.Actividad03
                         bool finDeAsientoActual = false;
                         int i = 1;
 
-
-                        if (char.IsDigit(renglon[0]))                                                               // Controla que el primer caracter es un digito (Nº de Asiento)
+                        if (char.IsDigit(renglon[0]))                                                                  // Controla que el primer caracter es un digito (Nº de Asiento)
                         {
                             var columnas = renglon.Split('|');
                             numeroAsiento = int.Parse(columnas[0]);
                             fecha = DateTime.Parse(columnas[1]);
                             debeTemporal.Add(int.Parse(columnas[2]), double.Parse(columnas[3]));
 
-                            int renglonSiguiente = renglones.IndexOf(renglon) + i;
-
-                            if (!char.IsDigit(renglones[renglonSiguiente][0]))                                     // Verifica que el renglon siguiente no tenga Nº de asiento
+                            while (finDeAsientoActual == false)                                                        // RENGLONSIGUIENTE SE ESTA PASANDO DEL TAMAÑO DE LA LISTA
                             {
-                                var columnasRenglonSiguiente = renglones[renglonSiguiente].Split('|');
+                                int renglonSiguiente = renglones.IndexOf(renglon) + i;
+
+                                if (!char.IsDigit(renglones[renglonSiguiente][0]))                                     // Verifica que el renglon siguiente no tenga Nº de asiento
+                                {
+                                    var columnasRenglonSiguiente = renglones[renglonSiguiente].Split('|');
+
+                                    if (!string.IsNullOrWhiteSpace(columnasRenglonSiguiente[3]))                       // Verifica si corresponde al debe o al haber
+                                    {
+
+                                        debeTemporal.Add(int.Parse(columnasRenglonSiguiente[2]), double.Parse(columnasRenglonSiguiente[3]));
+                                    }
+                                    else
+                                    {
+                                        if (!char.IsDigit(renglones[renglonSiguiente][0]))
+                                        {
+                                            haberTemporal.Add(int.Parse(columnasRenglonSiguiente[2]), double.Parse(columnasRenglonSiguiente[4]));
+                                        }                                        
+                                    }
+                                }
+                                else
+                                {
+                                    finDeAsientoActual = true;
+                                    break;
+                                }
+                                i++;
+                            }
+
+                            Asiento asientoImportado = new Asiento(numeroAsiento, fecha, debeTemporal, haberTemporal);
+                            reader.Close();
+                            contadorDeAsientos++;
+                            Diario.Add(asientoImportado.Numero, asientoImportado);
+                        }
+
+                        /*if (char.IsDigit(renglon[0]))                                                               // Controla que el primer caracter es un digito (Nº de Asiento)
+                        {
+                            var columnas = renglon.Split('|');
+                            numeroAsiento = int.Parse(columnas[0]);
+                            fecha = DateTime.Parse(columnas[1]);
+                            debeTemporal.Add(int.Parse(columnas[2]), double.Parse(columnas[3]));
+
+                            if (!char.IsDigit(renglones[renglones.IndexOf(renglon) + 1][0]))                                     // Verifica que el renglon siguiente no tenga Nº de asiento
+                            {
+                                var columnasRenglonSiguiente = renglones[renglones.IndexOf(renglon) + 1].Split('|');
 
                                 if (!string.IsNullOrWhiteSpace(columnasRenglonSiguiente[3]))                       // Verifica si corresponde al debe o al haber
                                 {
@@ -182,7 +221,7 @@ namespace A891932.Actividad03
                                 }
                                 else
                                 {
-                                    if (!char.IsDigit(renglones[renglonSiguiente][0]))
+                                    if (!char.IsDigit(renglones[renglones.IndexOf(renglon) + 1][0]))
                                     {
                                         haberTemporal.Add(int.Parse(columnasRenglonSiguiente[2]), double.Parse(columnasRenglonSiguiente[4]));
                                     }
@@ -193,7 +232,7 @@ namespace A891932.Actividad03
                             reader.Close();
                             contadorDeAsientos++;
                             Diario.Add(asientoImportado.Numero, asientoImportado);
-                        }                                               
+                        }*/
                     }
                 }
             }
