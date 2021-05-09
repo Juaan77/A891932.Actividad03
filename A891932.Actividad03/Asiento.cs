@@ -144,7 +144,7 @@ namespace A891932.Actividad03
                 {
                     // Formato de salida:
                     //                    NroAsiento          |         Fecha             |             CodigoCuenta              |             Debe                        |Haber  
-                    retorno += $"{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}|";
+                    retorno += $"\n{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}|";
                 }
 
                 contador++;
@@ -157,12 +157,12 @@ namespace A891932.Actividad03
                 if (contador < Haber.Count)
                 {
                     //                  NroAsiento            |      Fecha                |CodigoCuenta                           |         Debe              |         Haber  
-                    retorno += $"{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}";
+                    retorno += $"\n{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}";
                 }
                 else
                 {
                     //                  NroAsiento            |      Fecha                |         CodigoCuenta                  |         Debe              |         Haber  
-                    retorno += $"{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}";
+                    retorno += $"\n{padding.PadLeft(10, ' ')}|{padding.PadRight(17, ' ')}|{item.Key.ToString().PadLeft(12, ' ')}|{padding.PadLeft(10, ' ')}|{item.Value.ToString().PadLeft(10, ' ')}";
                 }
 
             }

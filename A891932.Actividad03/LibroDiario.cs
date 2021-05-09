@@ -194,7 +194,13 @@ namespace A891932.Actividad03
                                     finDeAsientoActual = true;
                                     break;
                                 }
+                                
                                 i++;
+
+                                if(renglonSiguiente+i > renglones.Count)
+                                {
+                                    break;
+                                }
                             }
 
                             Asiento asientoImportado = new Asiento(numeroAsiento, fecha, debeTemporal, haberTemporal);
